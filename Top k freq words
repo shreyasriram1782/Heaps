@@ -1,0 +1,36 @@
+import heapq
+from collections import Counter
+
+def top_k_frequent_words(words, k):
+    word_count = Counter(words)
+
+    # Use a min heap to keep track of k most frequent words
+    heap = [(-freq, word) for word, freq in word_count.items()]
+    heapq.heapify(heap)
+
+    # Extract the top k words from the heap
+    top_k_words = [heapq.heappop(heap)[1] for _ in range(k)]
+
+    return top_k_words
+
+# Example usage:
+words_list = ["apple", "banana", "orange", "apple", "banana", "apple", "cherry"]
+k = 2
+
+result = top_k_frequent_words(words_list, k)
+print(f"The top {k} frequent words are: {result}")
+We use the Counter class from the collections module to count the 
+frequency of each word in the input list.
+
+We create a min heap (heap) to keep track of the k most frequent words. 
+The heap is represented as a list of tuples where the first element of the 
+tuple is the negative frequency (to simulate a max heap), and the second element is the word.
+
+We use heapq.heapify to convert the list into a valid heap.
+
+We extract the top k words from the heap by repeatedly popping elements from it.
+
+The final result is a list of the k most frequent words.
+
+You can adjust the input list (words_list) and the value of k based on your 
+specific requirements. This approach has a time complexity of O(N log k), where N is the number of words in the input list.
