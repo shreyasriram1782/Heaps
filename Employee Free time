@@ -1,0 +1,65 @@
+from typing import List
+
+class Interval:
+    def __init__(self, start: int, end: int):
+        self.start = start
+        self.end = end
+
+def employeeFreeTime(schedule: List[List[Interval]]) -> List[Interval]:
+    # Flatten the list of intervals for all employees into a single list of intervals.
+    intervals = [interval for employee_schedule in schedule for interval in employee_schedule]
+
+    # Sort the list of intervals based on the start time.
+    intervals.sort(key=lambda x: x.start)
+
+    # List to store the free time intervals.
+    free_time_intervals = []
+
+    # Initialize the previous end time with the end time of the first interval.
+    prev_end = intervals[0].end
+
+    # Iterate through the sorted intervals to find the gaps between intervals.
+    for interval in intervals[1:]:
+        # If there is a gap between intervals, add a free time interval to the result.
+        if interval.start > prev_end:
+            free_time_intervals.append(Interval(prev_end, interval.start))
+            prev_end = interval.end
+        else:
+            # If the intervals overlap, update the previous end time.
+            prev_end = max(prev_end, interval.end)
+
+    # Return the list of free time intervals.
+    return free_time_intervals
+
+# Example Usage
+employee_schedule = [
+    [Interval(1, 2), Interval(5, 6)],
+    [Interval(1, 3)],
+    [Interval(4, 10)]
+]
+
+# Call the function and print the result.
+result = employeeFreeTime(employee_schedule)
+for interval in result:
+    print(f"[{interval.start}, {interval.end}]")
+Time Complexity:
+
+Sorting Intervals: The sorting step has a time complexity
+of O(N log N), where N is the total number of intervals in 
+all employees' schedules.
+
+Iterating through Intervals: After sorting, iterating 
+through the sorted intervals and identifying the gaps has a 
+time complexity of O(N), where N is the total number of intervals.
+
+The dominant factor in the time complexity is the sorting 
+step, so the overall time complexity is O(N log N).
+
+Space Complexity:
+The space complexity is influenced by the list of flattened 
+intervals, which has a space complexity of O(N) since it stores all intervals.
+
+In summary:
+
+Time complexity: O(N log N)
+Space complexity: O(N)
