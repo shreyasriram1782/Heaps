@@ -1,0 +1,20 @@
+class Solution:
+    def topKFrequent(self, nums: List[int], k: int) -> List[int]:
+        element_count=Counter(nums)
+        # Use Counter to count the frequency of each element
+        # element_count = {}
+        
+
+        # Create a list of buckets to store elements with the same frequency
+        buckets = [[] for _ in range(len(nums) + 1)]
+        # for num in nums:
+        #     element_count[num]=1+element_count.get(num,0)
+
+        # Distribute elements into buckets based on their frequency
+        for num, freq in element_count.items():
+            buckets[freq].append(num)
+
+        # Extract the top k elements from the buckets
+        top_k_elements = [elem for bucket in reversed(buckets) for elem in bucket][:k]
+
+        return top_k_elements
