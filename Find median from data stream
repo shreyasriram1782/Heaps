@@ -1,0 +1,92 @@
+Use two heaps to maintain the elements of the data stream: a max 
+heap to store the smaller half of the numbers and a min heap to store the larger half.
+
+Ensure that the size of the max heap is equal to or one more 
+than the size of the min heap to get the median efficiently.
+
+When adding a new number, compare it with the root of both heaps:
+
+If the number is smaller than the root of the max heap, add it to the max heap.
+If the number is larger than the root of the min heap, add it to the min heap.
+If the number is between the roots, decide based on the sizes of the heaps.
+After adding a new number, check if the sizes of the heaps are balanced. 
+If not, rebalance by moving the root of one heap to the other.
+
+The median can be obtained by looking at the roots of the heaps:
+
+If the heaps have equal sizes, the median is the average of their roots.
+If the max heap is larger, the median is the root of the max heap.
+If the min heap is larger, the median is the root of the min heap.
+Here's a Python implementation:
+
+python
+Copy code
+import heapq
+
+class MedianFinder:
+
+    def __init__(self):
+        # Max heap for the smaller half of the numbers
+        self.max_heap = []
+        # Min heap for the larger half of the numbers
+        self.min_heap = []
+
+    def addNum(self, num: int) -> None:
+        # Add the number to the appropriate heap
+        if not self.max_heap or num <= -self.max_heap[0]:
+            heapq.heappush(self.max_heap, -num)
+        else:
+            heapq.heappush(self.min_heap, num)
+        
+        # Rebalance the heaps
+        if len(self.max_heap) > len(self.min_heap) + 1:
+            heapq.heappush(self.min_heap, -heapq.heappop(self.max_heap))
+        elif len(self.min_heap) > len(self.max_heap):
+            heapq.heappush(self.max_heap, -heapq.heappop(self.min_heap))
+
+    def findMedian(self) -> float:
+        if len(self.max_heap) == len(self.min_heap):
+            return (-self.max_heap[0] + self.min_heap[0]) / 2.0
+        else:
+            return -self.max_heap[0]
+This implementation ensures efficient addition of numbers and finding 
+the median in logarithmic time complexity.
+
+User
+what is time and space comp
+ChatGPT
+Let's analyze the time and space complexity of the MedianFinder class 
+for the "Find Median from Data Stream" problem.
+
+Time Complexity:
+
+Adding a number (addNum method): The heappush operation has a time 
+complexity of O(log n), where n is the number of elements in the heap. 
+Since there are two heaps (max heap and min heap), the time complexity 
+for adding a number is O(log n) in the worst case.
+
+Finding the median (findMedian method): Both retrieving the maximum element 
+from the max heap (-self.max_heap[0]) and retrieving the minimum element 
+from the min heap (self.min_heap[0]) have constant time complexity. Thus, 
+finding the median has a constant time complexity.
+
+As a result, the overall time complexity for adding a number and 
+finding the median is O(log n) for each operation.
+
+Space Complexity:
+The space complexity is determined by the size of the heaps and any 
+additional data structures used. In this case, we use two heaps, 
+and the space complexity is O(n), where n is the number of elements added to the data structure.
+
+To be more precise, each element is stored once in either the max 
+heap or the min heap. Therefore, the space complexity is proportional to the number of elements in the data stream.
+
+In summary:
+
+Time complexity for adding a number: O(log n)
+Time complexity for finding the median: O(1)
+Space complexity: O(n)
+
+
+
+
