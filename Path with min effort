@@ -1,0 +1,74 @@
+What Makes This Problem Unique?
+Graph Representation:
+This problem can be mapped to a graph where each cell in the 2D matrix is a node. 
+The edges connecting these nodes represent the "effort" required to move from one cell to another.
+
+Variants of Shortest Path Algorithms:
+The objective is similar to finding the shortest path, but with a different 
+metric. We need to minimize the maximum absolute difference between adjacent nodes.
+
+Constraints:
+
+1≤rows, columns≤1001 \leq \text{rows, columns} \leq 1001≤rows, columns≤100
+1≤heights[i][j]≤1061 \leq \text{heights}[i][j] \leq 10^61≤heights[i][j]≤10 
+6
+ 
+Strategies to Tackle the Problem
+Dijkstra's Algorithm:
+A classic algorithm for finding the shortest path in a weighted graph, 
+adapted for this problem.
+Dijkstra's Algorithm Explained
+What is Dijkstra's Algorithm?
+Dijkstra's Algorithm is a classic graph algorithm that finds the shortest path 
+from a source node to all other nodes in a weighted graph. In this case, 
+the graph is represented by a 2D grid of cells, where each cell is a node 
+and the edges between them represent the effort to move from one cell to another.
+
+Mechanics of Dijkstra's Algorithm in "Path With Minimum Effort"
+Initialize Priority Queue:
+
+The algorithm starts at the top-left corner (the source). The priority queue 
+is initialized to store the effort needed to reach each cell from the source. 
+The effort for the source itself is zero.
+Distance Matrix:
+
+A 2D array keeps track of the minimum effort required to reach each cell. 
+Initially, this is set to infinity for all cells except the source.
+Iterate and Update Distances:
+
+The algorithm pops the cell with the smallest effort from the priority queue 
+and explores its neighbors. The effort required to reach a neighbor is updated if a smaller effort is found.
+Early Exit:
+
+The algorithm stops when it reaches the bottom-right corner, returning the 
+effort required to get there.
+Time and Space Complexity
+Time Complexity: O(M×Nlog⁡(M×N))O(M \times N \log(M \times N))O(M×Nlog(M×N)), 
+where MMM and NNN are the dimensions of the grid. This is primarily due to the operations on the priority queue.
+Space Complexity: O(M×N)O(M \times N)O(M×N), needed for the distance matrix and the priority queue.
+
+
+
+class Solution:
+    def minimumEffortPath(self, heights: List[List[int]]) -> int:
+        rows, cols = len(heights), len(heights[0])
+        directions = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        dist = [[math.inf for _ in range(cols)] for _ in range(rows)]
+        dist[0][0] = 0
+        minHeap = [(0, 0, 0)] 
+        
+        while minHeap:
+            effort, x, y = heappop(minHeap)
+
+            if x == rows - 1 and y == cols - 1:
+                return effort
+            
+            for dx, dy in directions:
+                nx, ny = x + dx, y + dy
+                
+                if 0 <= nx < rows and 0 <= ny < cols:
+                    new_effort = max(effort, abs(heights[x][y] - heights[nx][ny]))
+                    
+                    if new_effort < dist[nx][ny]:
+                        dist[nx][ny] = new_effort
+                        heappush(minHeap, (new_effort, nx, ny))
