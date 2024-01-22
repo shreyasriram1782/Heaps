@@ -1,0 +1,65 @@
+Use a Deque for Efficient Maximum Finding:
+
+Use a deque to efficiently find the maximum element within a certain range.
+Iterate Through the Array:
+
+Iterate through the array and maintain the deque to track the maximum elements within the current window.
+Dynamic Programming with Maximum Sums:
+
+Use dynamic programming to keep track of the maximum sums of subarrays ending at each index.
+Iterate Through the Array Again:
+
+Iterate through the array again, using the maximum sums from dynamic programming to calculate the maximum subsequence sum.
+
+
+Let's analyze the time and space complexity of the constrainedSubsetSum function:
+
+Time Complexity:
+
+The iteration through the array has a time complexity of O(N), 
+where N is the length of the input array nums.
+Inside the loop, each operation (deque operations, maximum calculation) 
+is constant time or amortized constant time due to the deque being bounded in size.
+Therefore, the overall time complexity is O(N).
+Space Complexity:
+
+The dynamic programming array dp has a space complexity of O(N).
+The deque can have at most k elements, so the space complexity
+for the deque is O(k).
+Overall, the space complexity is O(N + k), but since k is
+typically smaller than N, we can consider it as O(N).
+
+
+from collections import deque
+
+def constrainedSubsetSum(nums, k):
+    n = len(nums)
+    
+    # dp[i]: maximum subarray sum ending at index i
+    dp = [0] * n
+    
+    # Initialize deque
+    deque_indices = deque()
+
+    for i in range(n):
+        # Remove indices that are outside the window
+        while deque_indices and deque_indices[0] < i - k:
+            deque_indices.popleft()
+
+        # Calculate the maximum subarray sum ending at index i
+        dp[i] = max(nums[i], nums[i] + (dp[deque_indices[0]] if deque_indices else 0))
+
+        # Remove elements from the back of the deque that are smaller than dp[i]
+        while deque_indices and dp[i] > dp[deque_indices[-1]]:
+            deque_indices.pop()
+
+        # Add the current index to the deque
+        deque_indices.append(i)
+
+    return max(dp)
+
+# Example Usage
+nums = [10,2,-10,5,20]
+k = 2
+result = constrainedSubsetSum(nums, k)
+print(result)
