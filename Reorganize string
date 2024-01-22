@@ -1,0 +1,68 @@
+Key Data Structures
+Max Heap: Used for storing characters sorted by their frequency in descending order.
+Enhanced Breakdown
+Initialization:
+
+Count the frequency of each character in the string.
+Populate the max heap with these frequencies.
+Processing Each Character:
+
+Pop the top two characters from the max heap (i.e., the ones with the highest frequency).
+Append these two characters to the result string.
+Decrement their frequencies and re-insert them back into the max heap.
+If only one character remains in the heap, make sure it doesn't exceed 
+half of the string length, otherwise, return an empty string.
+Wrap-up:
+
+If there's a single remaining character with a frequency of 1, 
+append it to the result.
+Join all the characters to return the final reorganized string.
+Example:
+Given the input "aab":
+
+Max heap after initialization: [(-2, 'a'), (-1, 'b')]
+Result after first iteration: "ab"
+Wrap-up: Result is "aba"
+
+class Solution:
+    def reorganizeString(self, s: str) -> str:
+        freq_map = {}
+        for char in s:
+            freq_map[char] = freq_map.get(char, 0) + 1
+            
+        max_heap = [(-freq, char) for char, freq in freq_map.items()]
+        heapq.heapify(max_heap)
+        
+        res = []
+        
+        while len(max_heap) >= 2:
+            freq1, char1 = heapq.heappop(max_heap)
+            freq2, char2 = heapq.heappop(max_heap)
+            
+            res.extend([char1, char2])
+            
+            if freq1 + 1 < 0:
+                heapq.heappush(max_heap, (freq1 + 1, char1))
+            if freq2 + 1 < 0:
+                heapq.heappush(max_heap, (freq2 + 1, char2))
+                
+        if max_heap:
+            freq, char = heapq.heappop(max_heap)
+            if -freq > 1:
+                return ""
+            res.append(char)
+            
+        return "".join(res)
+
+Time Complexity:
+Priority Queue Approach: O(nlog⁡k)
+
+O(n) for counting the frequency of each character in the string. Here, n is the length of the string.
+O(klog⁡k) for building the max heap, where kkk is the number of unique characters in the string.
+The heap operations (insertion and deletion) would require log⁡k\log klogk time each. 
+In the worst-case scenario, you would be doing these operations nnn times (once for each character in the string).
+
+
+For both approaches, you would need an additional data structure (either a max heap or an array) to store the characters and their frequencies.
+In the Priority Queue Approach, the heap would contain at most kkk elements (unique characters), and the result string would contain nnn characters.
+In the Array Sort Approach, the sorted array and result string would also contain nnn characters.
