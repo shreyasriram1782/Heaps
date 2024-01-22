@@ -1,0 +1,113 @@
+class Solution:
+    def nthUglyNumber(self, n: int) -> int:
+        # take a min heap and insert 1 into it as 
+        #there is no prime factor for 1
+        min_heap = [1] 
+        #take one variable which records no of variable which have been
+        # recorded already
+        seen = set([1]) 
+        prime_no = (2,3,5)
+        #iterating n-1 times
+        for i in range(n-1):  
+            ugly_no = heapq.heappop(min_heap)
+            for ele in prime_no:
+                no = ugly_no * ele
+                if no not in seen:
+                    seen.add(no)
+                    heapq.heappush(min_heap, no)
+        return min_heap[0]
+
+DRY RUN
+------iteration----no------- 0
+ugly 1
+product 2
+seen [1, 2]
+minHeap [2]
+product 3
+seen [1, 2, 3]
+minHeap [2, 3]
+product 5
+seen [1, 2, 3, 5]
+minHeap [2, 3, 5]
+------iteration----no------- 1
+ugly 2
+product 4
+seen [1, 2, 3, 5, 4]
+minHeap [3, 5, 4]
+product 6
+seen [1, 2, 3, 5, 4, 6]
+minHeap [3, 5, 4, 6]
+product 10
+seen [1, 2, 3, 5, 4, 6, 10]
+minHeap [3, 5, 4, 6, 10]
+------iteration----no------- 2
+ugly 3
+product 6
+product 9
+seen [1, 2, 3, 5, 4, 6, 10, 9]
+minHeap [4, 5, 10, 6, 9]
+product 15
+seen [1, 2, 3, 5, 4, 6, 10, 9, 15]
+minHeap [4, 5, 10, 6, 9, 15]
+------iteration----no------- 3
+ugly 4
+product 8
+seen [1, 2, 3, 5, 4, 6, 10, 9, 15, 8]
+minHeap [5, 6, 8, 15, 9, 10]
+product 12
+seen [1, 2, 3, 5, 4, 6, 10, 9, 15, 8, 12]
+minHeap [5, 6, 8, 15, 9, 10, 12]
+product 20
+seen [1, 2, 3, 5, 4, 6, 10, 9, 15, 8, 12, 20]
+minHeap [5, 6, 8, 15, 9, 10, 12, 20]
+------iteration----no------- 4
+ugly 5
+product 10
+product 15
+product 25
+seen [1, 2, 3, 5, 4, 6, 10, 9, 15, 8, 12, 20, 25]
+minHeap [6, 9, 8, 15, 20, 10, 12, 25]
+------iteration----no------- 5
+ugly 6
+product 12
+product 18
+seen [1, 2, 3, 5, 4, 6, 10, 9, 15, 8, 12, 20, 25, 18]
+minHeap [8, 9, 10, 15, 20, 25, 12, 18]
+product 30
+seen [1, 2, 3, 5, 4, 6, 10, 9, 15, 8, 12, 20, 25, 18, 30]
+minHeap [8, 9, 10, 15, 20, 25, 12, 18, 30]
+------iteration----no------- 6
+ugly 8
+product 16
+seen [1, 2, 3, 5, 4, 6, 10, 9, 15, 8, 12, 20, 25, 18, 30, 16]
+minHeap [9, 15, 10, 16, 20, 25, 12, 30, 18]
+product 24
+seen [1, 2, 3, 5, 4, 6, 10, 9, 15, 8, 12, 20, 25, 18, 30, 16, 24]
+minHeap [9, 15, 10, 16, 20, 25, 12, 30, 18, 24]
+product 40
+seen [1, 2, 3, 5, 4, 6, 10, 9, 15, 8, 12, 20, 25, 18, 30, 16, 24, 40]
+minHeap [9, 15, 10, 16, 20, 25, 12, 30, 18, 24, 40]
+------iteration----no------- 7
+ugly 9
+product 18
+product 27
+seen [1, 2, 3, 5, 4, 6, 10, 9, 15, 8, 12, 20, 25, 18, 30, 16, 24, 40, 27]
+minHeap [10, 15, 12, 16, 20, 25, 40, 30, 18, 24, 27]
+product 45
+seen [1, 2, 3, 5, 4, 6, 10, 9, 15, 8, 12, 20, 25, 18, 30, 16, 24, 40, 27, 45]
+minHeap [10, 15, 12, 16, 20, 25, 40, 30, 18, 24, 27, 45]
+------iteration----no------- 8
+ugly 10
+product 20
+product 30
+product 50
+seen [1, 2, 3, 5, 4, 6, 10, 9, 15, 8, 12, 20, 25, 18, 30, 16, 24, 40, 27, 45, 50]
+minHeap [12, 15, 25, 16, 20, 45, 40, 30, 18, 24, 27, 50]
+
+---------------------HERE IS THE FINAL OUTPUT-------------------------
+output 12
+seen [1, 2, 3, 5, 4, 6, 10, 9, 15, 8, 12, 20, 25, 18, 30, 16, 24, 40, 27, 45, 50]
+minheap [12, 15, 25, 16, 20, 45, 40, 30, 18, 24, 27, 50]
+ time complexity of O(n), 
+space complexity of this solution is O(n) due to the size of 
+the heap and the set used to store the generated ugly numbers. 
