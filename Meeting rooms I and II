@@ -1,0 +1,63 @@
+Meeting Rooms I:
+Problem: Given a list of meeting intervals, determine if a person could attend all meetings.
+Approach: Sort the intervals based on their start times. If there are no overlapping intervals 
+(i.e., end time of the previous meeting is less than the start time of the next meeting), 
+then it's possible to attend all meetings.
+
+def canAttendMeetings(intervals):
+    intervals.sort(key=lambda x: x[0])
+    for i in range(1, len(intervals)):
+        if intervals[i][0] < intervals[i-1][1]:
+            return False
+    return True
+Meeting Rooms II:
+Problem: Given a list of meeting intervals, find the minimum number of meeting rooms required.
+Approach: Use a min heap to keep track of the end times of ongoing meetings. 
+Sort the intervals based on start times. If the start time of a meeting is greater than or equal
+to the end time of the meeting with the earliest end time in the heap, allocate the room; otherwise, allocate a new room.
+
+import heapq
+
+def minMeetingRooms(intervals):
+    if not intervals:
+        return 0
+    
+    intervals.sort(key=lambda x: x[0])
+    min_heap = [intervals[0][1]]
+    
+    for interval in intervals[1:]:
+        if interval[0] >= min_heap[0]:
+            heapq.heappop(min_heap)
+        heapq.heappush(min_heap, interval[1])
+    
+    return len(min_heap)
+While the basic approach is similar, the exact implementation details vary. 
+"Meeting Rooms II" involves dynamic allocation of meeting rooms using a priority queue, 
+while "Meeting Rooms I" focuses on checking for conflicts by comparing start and end times.
+
+
+Meeting Rooms I:
+Time Complexity (TC):
+
+Sorting the intervals takes O(n log n) time.
+Iterating through the sorted intervals to check for conflicts takes O(n) time.
+The overall time complexity is O(n log n).
+Space Complexity (SC):
+
+The space used is O(1) because we are not using any extra space that grows with the input size.
+Meeting Rooms II:
+Time Complexity (TC):
+
+Sorting the intervals takes O(n log n) time.
+Using a min heap to manage ongoing meetings takes O(n log n) time.
+The overall time complexity is O(n log n).
+Space Complexity (SC):
+
+The space used is O(n) because we use a min heap that can potentially hold all intervals in the worst case.
+It's worth noting that the space complexity for "Meeting Rooms II" is 
+higher due to the use of a min heap. Both solutions have a time complexity dominated by the sorting step, making it O(n log n).
+
+
+
+
+
