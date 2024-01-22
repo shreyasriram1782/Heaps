@@ -1,0 +1,90 @@
+
+Sure, let's go through a dry run and then discuss the solution and 
+approach for the "Single-Threaded CPU" problem on LeetCode.
+
+Problem Statement:
+You are given n tasks represented by an array tasks, where 
+tasks[i] = [enqueueTime_i, processingTime_i] means that the ith task will 
+be available to process at time enqueueTime_i and will take processingTime_i 
+units of time to process. A single-threaded CPU can only execute one task at a 
+time and will execute the task with the smallest processing time first. If two 
+tasks have the same processing time, the task with the smaller enqueue time is 
+scheduled first. Write a function to return the order in which the CPU will process the tasks.
+
+Dry Run:
+Consider the input tasks = [[1,2],[2,4],[3,2],[4,1]].
+
+Initially, the tasks are sorted in reverse order based on enqueue time: 
+tasks = [[4,1],[3,2],[2,4],[1,2]].
+We maintain a heap to keep track of available tasks at any given time.
+Time starts at 0. We look at tasks that are available at or before time 0 
+and add them to the heap: [4,1] is added.
+The task with the smallest processing time in the heap is selected and processed. 
+The result is [4], and time becomes 1.
+We repeat this process until all tasks are processed: [4,2,3,1].
+
+
+import heapq
+
+def getOrder(tasks):
+    # Enumerate tasks with their original indices
+    tasks = [(enq, proc, i) for i, (enq, proc) in enumerate(tasks)]
+    
+    # Sort tasks in reverse order based on enqueue time
+    tasks.sort(reverse=True)
+
+    result = []
+    heap = []
+    time = 0
+
+    while tasks or heap:
+        # Add tasks with enqueue time at or before the current time to the heap
+        while tasks and tasks[-1][0] <= time:
+            enq, proc, i = tasks.pop()
+            heapq.heappush(heap, (proc, i))
+
+        if heap:
+            # Process the task with the smallest processing time from the heap
+            proc, i = heapq.heappop(heap)
+            time += proc
+            result.append(i)
+        elif tasks:
+            # If the heap is empty but there are still tasks, set the time to the next enqueue time
+            time = tasks[-1][0]
+
+    return result
+
+
+Dry Run:
+
+Enumerate tasks with their original indices:
+css
+Copy code
+tasks = [(1, 2, 0), (2, 4, 1), (3, 2, 2), (4, 1, 3)]
+Sort tasks in reverse order based on enqueue time:
+css
+Copy code
+tasks = [(4, 1, 3), (3, 2, 2), (2, 4, 1), (1, 2, 0)]
+Initialize empty heap, result, and set time to 0.
+Iteration 1:
+Add tasks with enqueue time at or before the current time (0) to the heap: [ (4, 1, 3) ].
+Pop the smallest processing time task from the heap: result = [3], time = 1.
+Iteration 2:
+Add tasks with enqueue time at or before the current time (1) to the heap: [ (2, 4, 1) ].
+Pop the smallest processing time task from the heap: result = [3, 1], time = 5.
+Iteration 3:
+Add tasks with enqueue time at or before the current time (5) to the heap: [ (3, 2, 2) ].
+Pop the smallest processing time task from the heap: result = [3, 1, 2], time = 7.
+Iteration 4:
+Add tasks with enqueue time at or before the current time (7) to the heap: [ (1, 2, 0) ].
+Pop the smallest processing time task from the heap: result = [3, 1, 2, 0], time = 9.
+All tasks are processed, and the final result is [3, 1, 2, 0].
+Result:
+The order in which the CPU will process the tasks is [3, 1, 2, 0]. Each element in the 
+result corresponds to the index of a task in the original tasks list.
+
+
+Time Complexity: O(n log n)
+Space Complexity: O(n)
+
+
