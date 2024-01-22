@@ -1,0 +1,52 @@
+Intuition
+Straighforward DFS problem. When you visit a node, memorize the total number of nodes in its subtree, its 3 largest cost values and 2 smallest negative cost values (if there're any) in its subtree (because the maximum value calculated can only be either product of the 3 largest cost values or product of the 2 minimum negative values with the largest cost value in its subtree)
+
+Approach
+Create a tree from the given edges
+Iterate through all children of the current node
+Foreach node, maintain a minHeap (for 3 maximum cost values) and a maxHeap (for 2 minimum negative cost values).
+After iterating through all children, calculate the maximum coins placed using the 2 given rules
+Complexity
+Time complexity: O(n)
+Space complexity: O(n)
+Code
+class Solution:
+    def placedCoins(self, edges: List[List[int]], cost: List[int]) -> List[int]:
+        n = len(cost)
+        tree = [[] for _ in range(n)]
+        for s, d in edges:
+            tree[s].append(d)
+            tree[d].append(s)
+        result = [0] * n
+        
+        visited = set()
+        def dfs(currentNode):
+            nonlocal result, visited
+            visited.add(currentNode)
+            count = 1
+            heap = [cost[currentNode]]
+            negativeHeap = []
+            if cost[currentNode] < 0: negativeHeap = [-cost[currentNode]]
+            for neighbor in tree[currentNode]:
+                if neighbor not in visited:
+                    subCount, subHeap, subNegHeap = dfs(neighbor)
+                    count += subCount
+                    for e in subHeap:
+                        heappush(heap, e)
+                        if len(heap) > 3: heappop(heap)
+                    for e in subNegHeap:
+                        heappush(negativeHeap, e)
+                        if len(negativeHeap) > 2: heappop(negativeHeap)
+            if count < 3: result[currentNode] = 1
+            else:
+                p = 1
+                for e in heap: p *= e
+                rs = p
+                if len(negativeHeap) == 2:
+                    neg = negativeHeap[0] * negativeHeap[1]
+                    rs = max(rs, neg*max(heap))
+                if rs < 0: result[currentNode] = 0
+                else: result[currentNode] = rs
+            return count, heap, negativeHeap
+        dfs(0)
+        return result
