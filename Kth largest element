@@ -1,0 +1,67 @@
+Rather than sorting the entire array, this method utilizes a min-heap 
+to maintain the kkk-th largest elements. The heap allows us to efficiently c
+ompare each new element with the smallest of the kkk-th largest elements seen so 
+far. By the end of the iteration, the top of the heap will contain our desired kkk-th largest element.
+Approach 2/3: Min-Heap
+The main idea of this solution is to use a min-heap with a maximum size of k. 
+By doing this, we ensure that the smallest of the k largest elements is always on the top of the heap.
+
+Key Data Structures:
+heap:
+This is a min-heap containing the first k elements of nums. As we progress, 
+we will modify this heap to ensure it contains the k largest elements.
+Step-by-step Breakdown:
+Initialization:
+
+Create a heap with the first k elements of nums.
+Transform this list into a min-heap.
+Iterate through the List:
+
+For each of the remaining elements in nums:
+If the element is larger than the smallest element in the heap (i.e., the top of the heap):
+Remove the top element from the heap.
+Insert the current element into the heap.
+Result:
+
+After processing all elements in nums, the top of the heap will contain 
+the kth largest element. Return this element.
+Example:
+Consider the list nums = [3,2,1,5,6,4] with k = 2.
+
+Here's the evolution of the heap:
+
+Initial State:
+
+heap: [3,2]
+After processing index 2 (element = 1):
+
+heap remains unchanged as 1 is not larger than 2.
+After processing index 3 (element = 5):
+
+heap: [3,5]
+After processing index 4 (element = 6):
+
+heap: [5,6]
+After processing index 5 (element = 4):
+
+heap: [5,6]
+The final state of the heap shows that the kth largest element is 5.
+
+Complexity
+Time Complexity: O(nlog⁡k)
+Each of the n elements is processed once. However, heap operations 
+take O(log⁡k) time, leading to an overall complexity of O(nlog⁡k)
+
+Space Complexity: O(k)
+The solution uses a heap with a maximum of k elements.
+class Solution:
+    def findKthLargest(self, nums: List[int], k: int) -> int:
+        heap = nums[:k]
+        heapq.heapify(heap)
+        
+        for num in nums[k:]:
+            if num > heap[0]:
+                heapq.heappop(heap)
+                heapq.heappush(heap, num)
+        
+        return heap[0]
