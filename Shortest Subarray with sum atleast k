@@ -1,0 +1,56 @@
+class Solution:
+    def shortestSubarray(self, A: List[int], K: int) -> int:
+        pre = [0]
+        for num in A:
+            pre.append(pre[-1]+num)
+            
+        deque = collections.deque()
+        result = float(inf)
+        for i,sum_ in enumerate(pre):
+            
+            while(deque and deque[-1][1] >=sum_):
+                deque.pop()
+            
+            while deque and sum_ - deque[0][1] >= K:
+                result = min(i-deque[0][0], result)
+                deque.popleft()
+                
+            deque.append([i,sum_])
+        return result if result!= float(inf) else -1           
+
+And then I look into the discuss and thinking how can use deque to achieve O(N).
+
+Some Tips:
+
+dealing with sum, construct sum array may help.
+using deque may leads to a O(N) solution.
+using deque:
+1. think about that should it be increasing or decreasing? since 
+we want to minimize the window size, no need to save one has bigger 
+sum but smaller index ==> choose increasing
+2. think about what we need to save in the deque? we need index to 
+compute window size, it is fine to not save the sum value in deque, 
+because you can get it by pre[i], but I save it too
+3. when add/ delete our deque:
+\ add => usually at the end of every loop
+\ delete=>
+a. keeping deque increasing, so when current sum_ <= sum_[deque[-1]], deque.pop()
+b. every time we check from the begining of the queue(smallest sum), 
+if it is satisfied with K difference we can pop it, because there will 
+no any other window satistify K and start with queue[0] have a smaller 
+size when sum_[i] - sum_[deque[0]] >= K, deque.popleft(0)
+
+Time Complexity:
+
+Prefix Sum Computation: Computing the prefix sum array
+has a time complexity of O(N), where N is the length of the input array nums.
+Deque Operations: The main part of the algorithm involves 
+iterating through the prefix sum array and performing deque 
+operations. The while loops inside the iteration contribute O(N) operations in total.
+Overall, the time complexity is O(N) because the prefix sum computation dominates the complexity.
+Space Complexity:
+
+Prefix Sum Array: The space complexity of the prefix sum array is O(N).
+Deque: The space used by the deque is at most O(N) since it stores indices.
+Overall, the space complexity is O(N) due to the prefix sum array and the deque.
+In summary:
